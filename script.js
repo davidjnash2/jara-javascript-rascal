@@ -56,18 +56,20 @@ function start() {
 
 // Takes in an array of products objects, calculates the
 // discount for each product, and renders the results to the DOM.
-function calculateProductDiscounts(arrayOfProducts) {
+function calculateProductDiscounts(products) {
 	// Loop through the array of products
-	for (let i = 0; i < arrayOfProducts.length; i++) {
+	for (let i = 0; i < products.length; i++) {
 		// "i" just can't find a single product...
-		const product = arrayOfProducts;
+		
+
+		const product = products[i];
 
 		// Calculate the discount for this one product object
 		const discount = calculateDiscount(product);
 
 		// Render the product and discount to the DOM
 		renderProduct(product, discount);
-	}
+	} 	
 }
 
 // Calculate the discount for a product, 
@@ -77,7 +79,7 @@ function calculateDiscount(product) {
 	let reviewDiscount = getReviewDiscount(product); 
 	
 	// Get a discount percentage, based on the year the product was posted
-	let yearAdjustment = getYearAdjustment(product.yearposted);
+	let yearAdjustment = getYearAdjustment(product.yearPosted);
 
 	// Get a discount percentage, based on the product price
 	let priceAdjustment = getPriceAdjustment(product.price);
@@ -86,14 +88,14 @@ function calculateDiscount(product) {
 	let discountPercent = reviewDiscount + yearAdjustment + priceAdjustment;
 
 	// The discount cannot be more than 25%, or less that 0%
-	if (discountPercent < 0.25) {
+	if (discountPercent > 0.25) { // corrected evaluation
 		discountPercent = 0.25;
-	} else if (discountPercent > 0) {
+	} else if (discountPercent < 0) { //corrected evaluation
 		discountPercent = 0;
 	}
 
 	// Convert the percentage to an actual dollar amount
-	let discountAmount = product.price * percent;
+	let discountAmount = product.price * discountPercent; //changed variable name from percent to discountPercent
 
 	return discountAmount;
 }
@@ -101,24 +103,24 @@ function calculateDiscount(product) {
 // We'll give a bigger discount for lower rated products
 function getReviewDiscount(product) {
 	let discount;
-
+ 	//for (product of products){// added for of loop for products in array
 	// 1, 2, or 3, you can't catch me!
-	if (product.reviews.avgRating = 5) {
+		if (product.reviews.avgRating === 5) {
 		// perfect rating 🏆, no discount
-		discount = 0;
-	}
-	else if (product.reviews.avgRating > 4.8) {
-		discount = 0.05;
-	}
-	else if (product.reviews.avgRating > 4.0) {
-		discount = 0.10;
-	}
-	else if (product.reviews.avgRating > 3.5) {
-		discount = 0.15;
-	}
-	else {
-		discount = 0.20;
-	}
+			discount = 0;
+		}
+		else if (product.reviews.avgRating > 4.8) {
+			discount = 0.05;
+		}
+		else if (product.reviews.avgRating > 4.0) {
+			discount = 0.10;
+		}
+		else if (product.reviews.avgRating > 3.5) {
+			discount = 0.15;
+		}
+		else {
+			discount = 0.20;
+		}
 
 
 	// Low rating, few reviews, bigger discount
@@ -127,22 +129,24 @@ function getReviewDiscount(product) {
 	}
 
 	// no discount for you!
-}
+//}
+return discount; // add return for function
+} //closed getReviewDiscount function
 
 // Old products get an extra 10% discount
 function getYearAdjustment(yearPosted) {
 	if (yearPosted < 2010) {
-		return "0.10";
+		return 0.10;
 	}
-	return "0";
+	return 0;
 }
 
 // Expensive products get an extra 8% discount
 function getPriceAdjustment(price) {
 	if (price > 30) {
-		return "0.08";
+		return 0.08;
 	}
-	return "0";
+	return 0;
 }
 
 // Render a <tr> element to the DOM for a product
